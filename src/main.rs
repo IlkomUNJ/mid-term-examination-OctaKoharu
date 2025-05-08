@@ -125,6 +125,77 @@ fn test_binary_search_tree(){
         let rootalter = BstNode::tree_delete(&rootlink2.as_ref().unwrap());
         generate_dotfile_bst(&rootalter, "bst_delete_root.dot");
     }
+
+        // test add_node function
+        println!("\nTest add_node:");
+
+
+        let node_13 = rootlink
+            .borrow().left.as_ref().unwrap()
+            .borrow().right.as_ref().unwrap()
+            .borrow().right.as_ref().unwrap()
+            .clone();
+    
+        let status = rootlink.borrow().add_node(&node_13, 12);
+        println!("Add node under 13 status: {}", status);
+    
+        let status2 = rootlink.borrow().add_node(&node_13, 14);
+        println!("Add node under 13 status (second attempt): {}", status2);
+    
+        let status3 = rootlink.borrow().add_node(&node_13, 11);
+        println!("Add node under 13 status (third attempt): {}", status3);
+    
+        generate_dotfile_bst(&rootlink, "bst_add_node_test.dot");
+
+        // predecessor test
+        println!("\nPredecessor Test:");
+        let query_keys = vec![
+            2,    // min node
+            20,
+            15,   
+            13,   
+            9,    
+            6,    
+            22    
+        ];
+    
+        for &key in query_keys.iter() {
+            if let Some(node) = rootlink.borrow().tree_search(&key) {
+                print!("predecessor of node ({}) is ", key);
+    
+                if let Some(pred) = BstNode::tree_predecessor(&node) {
+                    println!("{:?}", pred.borrow().key);
+                } else {
+                    println!("not found");
+                }
+            } else {
+                println!("node with key of {} does not exist, failed to get predecessor", key)
+            }
+        }
+    
+    // test median
+    println!("\nTest median:");
+    let median_node = rootlink.borrow().median();
+    println!("Median node key: {:?}", median_node.borrow().key);
+
+    generate_dotfile_bst(&rootlink, "bst_with_median.dot");
+
+        println!("\nTest tree_rebalance:");
+        let unbalanced_root = BstNode::new_bst_nodelink(1);
+    
+        for key in 2..=10 {
+            BstNode::tree_insert(&Some(unbalanced_root.clone()), &key);
+        }
+    
+        generate_dotfile_bst(&unbalanced_root, "bst_unbalanced.dot");
+    
+        let rebalanced_root = BstNode::tree_rebalance(&unbalanced_root);
+        generate_dotfile_bst(&rebalanced_root, "bst_rebalanced.dot");
+    
+        let median_after = rebalanced_root.borrow().median();
+        println!("Median after rebalance: {:?}", median_after.borrow().key);
+    
+
 }
 
 fn test_index(){
@@ -229,3 +300,5 @@ fn test_binary_tree() {
     main_tree_path = "prime_t4.dot";
     generate_dotfile(&rootlink, main_tree_path);
 }
+
+ //coba doang
